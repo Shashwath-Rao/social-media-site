@@ -31,19 +31,20 @@ class DeleteGroup(LoginRequiredMixin, generic.DeleteView):
         return queryset.filter(slug=self.kwargs.get('slug'))
 
     def delete(self,*args,**kwargs):
-        messages.success(self.request,f"{self.kwargs.get('slug')} group deleted!")
+        messages.success(self.request,f"{kwargs.get('slug')} group deleted!")
         return super().delete(*args,**kwargs)
 
 class JoinGroup(LoginRequiredMixin, generic.RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
-        return reverse("groups:single",kwargs={"slug": self.kwargs.get("slug")})
+        return reverse("groups:single",kwargs={"slug": kwargs.get("slug")})
 
     def get(self, request, *args, **kwargs):
-        group = get_object_or_404(Group,slug=self.kwargs.get("slug"))
+
+        group = get_object_or_404(Group,slug=kwargs.get("slug"))
 
         try:
-            GroupMember.objects.create(user=self.request.user,group=group)
+            GroupMember.objects.create(user=request.user,group=group)
 
         except IntegrityError:
             messages.warning(self.request, f"Warning, already a member of {group.name}")
@@ -57,15 +58,14 @@ class JoinGroup(LoginRequiredMixin, generic.RedirectView):
 class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
-        return reverse("groups:single",kwargs={"slug": self.kwargs.get("slug")})
+        return reverse("groups:single",kwargs={"slug": kwargs.get("slug")})
 
     def get(self, request, *args, **kwargs):
 
         try:
-
             membership = models.GroupMember.objects.filter(
-                user=self.request.user,
-                group__slug=self.kwargs.get("slug")
+                user=request.user,
+                group__slug=kwargs.get("slug")
             ).get()
 
         except models.GroupMember.DoesNotExist:
