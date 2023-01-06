@@ -3,11 +3,11 @@
 {% block pregroup %}
   <h3>Are you sure you want to delete {{group.name}} Group?</h3>
   <div class="posts">
-  </div>
   <form method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger btn-large" value="Confirm Delete">
     &nbsp;&nbsp;
     <a href="{% url 'groups:single' slug=group.slug %}" class="btn btn-simple btn-large btn-default">Cancel</a>
   </form>
+</div>
 {% endblock %}
