@@ -47,10 +47,10 @@ class JoinGroup(LoginRequiredMixin, generic.RedirectView):
             GroupMember.objects.create(user=request.user,group=group)
 
         except IntegrityError:
-            messages.warning(self.request, f"Warning, already a member of {group.name}")
+            messages.warning(request, f"Warning, already a member of {group.name}")
 
         else:
-            messages.success(self.request, f"You are now a member of the <strong>{group.name}</strong> group.")
+            messages.success(request, f"You are now a member of the <strong>{group.name}</strong> group.")
 
         return super().get(request, *args, **kwargs)
 
@@ -69,14 +69,12 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
             ).get()
 
         except models.GroupMember.DoesNotExist:
-            messages.warning(
-                self.request,
+            messages.warning(request,
                 "You can't leave this group because you aren't in it."
             )
         else:
             membership.delete()
-            messages.success(
-                self.request,
+            messages.success(request,
                 "You have successfully left this group."
             )
         return super().get(request, *args, **kwargs)
