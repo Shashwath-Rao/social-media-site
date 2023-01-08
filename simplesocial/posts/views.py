@@ -5,7 +5,6 @@ from django.http import Http404
 from django.views import generic
 from braces.views import SelectRelatedMixin
 from . import models
-from . import forms
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 User = get_user_model()
