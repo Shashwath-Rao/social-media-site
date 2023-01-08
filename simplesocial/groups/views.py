@@ -10,7 +10,6 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from groups.models import Group,GroupMember
-from . import models
 
 class CreateGroup(LoginRequiredMixin, generic.CreateView):
     fields = ("name", "description")
@@ -63,12 +62,12 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
     def get(self, request, *args, **kwargs):
 
         try:
-            membership = models.GroupMember.objects.filter(
+            membership = GroupMember.objects.filter(
                 user=request.user,
                 group__slug=kwargs.get("slug")
             ).get()
 
-        except models.GroupMember.DoesNotExist:
+        except GroupMember.DoesNotExist:
             messages.warning(request,
                 "You can't leave this group because you aren't in it."
             )
