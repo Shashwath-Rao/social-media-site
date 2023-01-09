@@ -8,7 +8,6 @@
       <div class="content">
         <h5 class="title">Your Groups</h5>
         <ul class="list-unstyled">
-          {{ group_list }}
           {% for member_group in your_group %}
           <li class="group li-with-bullet">
             <a href="{% url 'groups:single' slug=member_group.slug %}">{{ member_group.name}}</a>
