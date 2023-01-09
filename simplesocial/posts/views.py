@@ -5,13 +5,20 @@ from django.http import Http404
 from django.views import generic
 from braces.views import SelectRelatedMixin
 from .models import Post
+from groups.models import Group
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 User = get_user_model()
 
-class PostList(SelectRelatedMixin,generic.ListView):
+class PostList(generic.ListView):
     model = Post
     select_related = ('user','group')
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['your_group'] = Group.objects.filter(members = self.request.user)
+        context['all_group'] =  Group.objects.all()
+        return context
 
 class UserPosts(generic.ListView):
     model = Post
@@ -20,7 +27,7 @@ class UserPosts(generic.ListView):
     def get_queryset(self):
         try:
             self.post_user = User.objects.prefetch_related('posts').get(username__iexact=self.kwargs.get('username'))
-            
+
         except User.DoesNotExist:
             raise Http404
         else:
